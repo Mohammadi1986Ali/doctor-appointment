@@ -18,5 +18,4 @@ public class SecurityConfig {
                 .headers().frameOptions().disable();
         return http.build();
     }
-
 }

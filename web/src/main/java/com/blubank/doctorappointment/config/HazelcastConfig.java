@@ -2,7 +2,6 @@ package com.blubank.doctorappointment.config;
 
 import com.hazelcast.config.*;
 import com.hazelcast.spi.merge.PutIfAbsentMergePolicy;
-import org.hibernate.internal.util.collections.BoundedConcurrentHashMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
