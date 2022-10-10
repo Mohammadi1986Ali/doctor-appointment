@@ -1,0 +1,46 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: Doctor Appointmets APIs
+  description: This will porvides reuiqred APIs for doctors and paitents
+paths:
+  /times:
+    get:
+      operationId: getAllTimes
+      responses:
+        200:
+          description: The list of time slots has been populated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSlotList'
+        400:
+          description: Not found
+    post:
+      operationId: addNewTimeSlot
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimeSlot'
+      responses:
+        201:
+          description: Time slots added
+        400:
+          description: Bad input data
+components:
+  schemas:
+    TimeSlotList:
+      type: array
+      items:
+        $ref: '#/components/schemas/TimeSlot'
+    TimeSlot:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date
+        end:
+          type: string
+          format: date
+
