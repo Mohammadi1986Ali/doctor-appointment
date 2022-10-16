@@ -4,43 +4,103 @@ info:
   title: Doctor Appointmets APIs
   description: This will porvides reuiqred APIs for doctors and paitents
 paths:
-  /times:
+  /doctors:
+    post:
+      operationId: addNewDoctor
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Doctor'
+      responses:
+        201:
+          description: Doctor added succesfully
+  /patient:
+    post:
+      operationId: addNewPatient
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Patient'
+      responses:
+        201:
+          description: Patirnt added succefully
+  /patients/{patientId}/appointments:
     get:
-      operationId: getAllTimes
+      operationId: getMyAppointment
+      parameters:
+      - in: path
+        name: patientId
+        required: true
+        schema:
+          type: number
+      responses:
+        200:
+          description: Patient appointments returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentList'
+  /appointments:
+    get:
+      operationId: getAppointments
       responses:
         200:
           description: The list of time slots has been populated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TimeSlotList'
+                $ref: '#/components/schemas/AppointmentList'
         400:
-          description: Not found
+          description: not found
+        406:
+          description: ddd
     post:
-      operationId: addNewTimeSlot
+      operationId: addNewAppointments
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TimeSlot'
+              $ref: '#/components/schemas/Appointment'
       responses:
-        201:
+        200:
           description: Time slots added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentList'
         400:
-          description: Bad input data
+          description: Bad data in input
 components:
   schemas:
-    TimeSlotList:
+    Doctor:
+      type: object
+      properties:
+        name:
+          type: string
+    Patient:
+      type: object
+      properties:
+        name:
+          type: string
+        phone:
+          type: string
+    AppointmentList:
       type: array
       items:
-        $ref: '#/components/schemas/TimeSlot'
-    TimeSlot:
+        $ref: '#/components/schemas/Appointment'
+    Appointment:
       type: object
+      required:
+      - start
+      - end
       properties:
         start:
           type: string
-          format: date
+          format: date-time
         end:
           type: string
-          format: date
-
+          format: date-time
+        patient:
+          $ref: '#/components/schemas/Patient'
