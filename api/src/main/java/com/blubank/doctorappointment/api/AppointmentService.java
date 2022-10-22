@@ -6,5 +6,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AppointmentService {
-    List<AppointmentDto> save(LocalDateTime start, LocalDateTime end);
+    List<AppointmentDto> addOpenAppointments(LocalDateTime start, LocalDateTime end, String username);
+
+    List<AppointmentDto> findOpenAppointments();
+
+    List<AppointmentDto> findAppointmentsTakenBy(String username);
+
+    List<AppointmentDto> findAppointmentsCreatedBy(String username);
+
+    AppointmentDto takeAppointment(Long appointmentId, String username, String patientName, String patientPhone);
+
+    void deleteOpenAppointment(Long appointmentId, String username);
 }
