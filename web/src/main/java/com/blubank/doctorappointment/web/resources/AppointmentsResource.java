@@ -36,6 +36,7 @@ public class AppointmentsResource implements AppointmentsApi {
 
     @Override
     public ResponseEntity<List<Appointment>> getAppointments() {
-        return null;
+        List<AppointmentDto> allAppointments = appointmentService.findAllOpenAppointment();
+        return ResponseEntity.ok(mapper.map(allAppointments));
     }
 }

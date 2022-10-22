@@ -38,4 +38,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
         return mapper.map(repository.saveAll(appointments));
     }
+
+    @Override
+    public List<AppointmentDto> findAllOpenAppointment() {
+        return mapper.map(repository.findAllOpenAppointment());
+    }
 }
