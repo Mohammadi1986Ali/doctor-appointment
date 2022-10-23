@@ -1,0 +1,15 @@
+{
+  "username": "ali",
+  "encryptedPassword": "$2a$10$l83O/kQ1QqSAaZfIzXwGHud6HcvTHd8API0kvCYsnXli1Dxc0BTo.",
+  "roles": [
+    {
+      "name": "ROLE_PATIENT"
+    },
+    {
+      "name": "ADMIN"
+    },
+    {
+      "name": "USER"
+    }
+  ]
+}

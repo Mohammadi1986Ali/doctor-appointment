@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 
 import java.util.List;
 
-@Mapper(uses = PatientMapper.class)
+@Mapper
 public interface AppointmentMapper {
     Appointment map(AppointmentDto appointmentDto);
 
