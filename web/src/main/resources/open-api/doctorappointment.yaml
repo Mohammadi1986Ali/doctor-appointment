@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  version: 1.0.0
-  title: Doctor Appointmets APIs
-  description: This will porvides reuiqred APIs for doctors and paitents
+  version: 1.0.6
+  title: Doctor appointments apis
+  description: This api wil porvide the reuiqred api for doctors and paitents
 paths:
   /doctors:
     post:
@@ -13,7 +13,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Doctor'
       responses:
-        200:
+        201:
           description: Doctor added succesfully
   /patients:
     post:
@@ -24,11 +24,26 @@ paths:
             schema:
               $ref: '#/components/schemas/Patient'
       responses:
-        200:
+        201:
           description: Patirnt added succefully
-  /patient/{patientId}/appointments:
+  /users:
+    post:
+      operationId: addNewUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        201:
+          description: User added sucesfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUserResponse'
+  /patients/{patientId}/appointments:
     get:
-      operationId: getOpenAppointment
+      operationId: getMyAppointment
       parameters:
       - in: path
         name: patientId
@@ -41,72 +56,190 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AppointmentList'
-
-  /doctor/{doctorId}/appointments:
-    get:
-      operationId: getReservedAppointment
-      parameters:
-      - in: path
-        name: doctorId
-        required: true
-        schema:
-          type: number
-      responses:
-        200:
-          description: Doctor appointments returned
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AppointmentList'
-
+                $ref: '#/components/schemas/BasicAppointmentInfoList'
   /appointments:
     get:
+      description: Doctor get the list of all appointment created by himself
       operationId: getAppointments
       responses:
         200:
-          description: The list of time slots has been populated
+          description: List of open-appointments and taken-appointments will be populated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AppointmentList'
+                $ref: '#/components/schemas/FullAppointmentInfoList'
         400:
-          description: Not found
+          description: not found
+        406:
+          description: ddd
+  /open-appointments:
     post:
+      description: Doctor will create open appointments
       operationId: addNewAppointments
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Appointment'
+              $ref: '#/components/schemas/CreateAppointmentRequest'
       responses:
         200:
-          description: Time slots added
+          description: Appointments added successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AppointmentList'
+                $ref: '#/components/schemas/BasicAppointmentInfoList'
         400:
           description: Bad data in input
+    get:
+      description: all open appointments which can be viewed by patients
+      operationId: getOpenAppointments
+      responses:
+        200:
+          description: All open appointment will be populated in response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicAppointmentInfoList'
+  /open-appointments/{appointmentId}:
+    put:
+      description: Patient takes an open appointment
+      operationId: takeAppointment
+      parameters:
+      - in: path
+        name: appointmentId
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TakeAppointmentRequest'
+      responses:
+        200:
+          description: appointment taken by patient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FullAppointmentInfo'
+        401:
+          description: unautorized
+        403:
+          description: no access
+        404:
+          description: apoointmenet not found
+    delete:
+      description: doctor delete an open appointment
+      operationId: deleteOpenAppointment
+      parameters:
+      - in: path
+        name: appointmentId
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        204:
+          description: Open appointment deleted
+        401:
+          description: unautorized
+        403:
+          description: no access
+        404:
+          description: apoointmenet not found
+  /taken-appointments:
+    get:
+      description: As a patient want to view appointments taken by himself
+      operationId: getTakenAppointments
+      responses:
+        200:
+          description: All open appointment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicAppointmentInfoList'
 components:
   schemas:
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: secret
+    CreateUserRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: secret
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserRole'
+    UserRole:
+      type: object
+      properties:
+        name:
+          type: string
+    CreateUserResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        username:
+          type: string
     Doctor:
       type: object
       properties:
         name:
           type: string
-    Patient:
-      type: object
-      properties:
-        name:
-          type: string
-        phone:
-          type: string
-    AppointmentList:
+    BasicAppointmentInfoList:
       type: array
       items:
-        $ref: '#/components/schemas/Appointment'
-    Appointment:
+        $ref: '#/components/schemas/BasicAppointmentInfo'
+    FullAppointmentInfoList:
+      type: array
+      items:
+        $ref: '#/components/schemas/FullAppointmentInfo'
+    BasicAppointmentInfo:
+      type: object
+      required:
+      - id
+      - start
+      - end
+      properties:
+        id:
+          type: integer
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+    FullAppointmentInfo:
+      type: object
+      required:
+      - id
+      - start
+      - end
+      properties:
+        id:
+          type: integer
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        patient:
+          $ref: '#/components/schemas/Patient'
+    CreateAppointmentRequest:
       type: object
       required:
       - start
@@ -118,5 +251,12 @@ components:
         end:
           type: string
           format: date-time
-        patient:
-          $ref: '#/components/schemas/Patient'
+    TakeAppointmentRequest:
+      $ref: '#/components/schemas/Patient'
+    Patient:
+      type: object
+      properties:
+        name:
+          type: string
+        phone:
+          type: string

@@ -1,6 +1,6 @@
 package com.blubank.doctorappointment.exceptions;
 
-public class InvalidAppointmentTimeException extends RuntimeException {
+public class InvalidAppointmentTimeException extends RuntimeException{
     public InvalidAppointmentTimeException() {
         super();
     }
