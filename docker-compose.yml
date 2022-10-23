@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  appointment-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: blubank/doctor-appointment
+    container_name: doctor-appointment
+    ports:
+      - 8080:8080
+    networks:
+      - blubank-network
+networks:
+  blubank-network:
+    name: blubank
+    external: false
